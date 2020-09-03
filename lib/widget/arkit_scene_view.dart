@@ -27,6 +27,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart';
 
+import '../arkit_reference_post_node.dart';
+
 typedef ARKitPluginCreatedCallback = void Function(ARKitController controller);
 typedef StringResultHandler = void Function(String text);
 typedef AnchorEventHandler = void Function(ARKitAnchor anchor);
@@ -303,6 +305,13 @@ class ARKitController {
     final params = _addParentNodeNameToParams(node.toMap(), parentNodeName);
     _subsribeToChanges(node);
     return _channel.invokeMethod('addARKitNode', params);
+  }
+
+  Future<void> addUIView(ARKitReferencePostNode node, {String parentNodeName}) {
+    assert(node != null);
+    final params = _addParentNodeNameToParams(node.toMap(), parentNodeName);
+    _subsribeToChanges(node);
+    return _channel.invokeMethod('addARKitUiView', params);
   }
 
   Future<void> remove(String nodeName) {
