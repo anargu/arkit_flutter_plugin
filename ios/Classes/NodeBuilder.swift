@@ -34,6 +34,41 @@ func createNode(_ geometry: SCNGeometry?, fromDict dict: Dictionary<String, Any>
     return node
 }
 
+
+func createUINode(_ geometry: SCNGeometry?, fromDict dict: Dictionary<String, Any>, forDevice device: MTLDevice?) -> SCNNode {
+//    let dartType = dict["dartType"] as! String
+    
+    let node = SCNNode(geometry: geometry)
+  
+    if let transform = dict["transform"] as? Array<NSNumber> {
+      node.transform = deserializeMatrix4(transform)
+    }
+    
+    if let name = dict["name"] as? String {
+        node.name = name
+    }
+    
+    if let physicsBody = dict["physicsBody"] as? Dictionary<String, Any> {
+        node.physicsBody = createPhysicsBody(physicsBody, forDevice: device)
+    }
+    
+    if let light = dict["light"] as? Dictionary<String, Any> {
+        node.light = createLight(light)
+    }
+    
+    if let renderingOrder = dict["renderingOrder"] as? Int {
+        node.renderingOrder = renderingOrder
+    }
+//    
+//    if let isHidden = dict["isHidden"] as? Bool {
+//        node.isHidden = isHidden
+//    }
+//    
+    
+    
+    return node
+}
+
 fileprivate func createReferenceNode(_ dict: Dictionary<String, Any>) -> SCNReferenceNode {
     let url = dict["url"] as! String
     var referenceUrl: URL

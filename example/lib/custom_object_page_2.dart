@@ -26,13 +26,26 @@ class _CustomObjectPage2State extends State<CustomObjectPage2> {
             showFeaturePoints: true,
             planeDetection: ARPlaneDetection.horizontal,
             onARKitViewCreated: onARKitViewCreated,
+            enableTapRecognizer: true,
           ),
         ),
       );
 
   void onARKitViewCreated(ARKitController arkitController) {
     this.arkitController = arkitController;
-    this.arkitController.onAddNodeForAnchor = _handleAddAnchor;
+    // this.arkitController.onAddNodeForAnchor = _handleAddAnchor;
+    node = ARKitReferencePostNode(
+        url: 'models.scnassets/eevee.dae',
+        position: vector.Vector3(0, 0, -2),
+        scale: vector.Vector3(0.2, 0.2, 0.2),
+        description: 'hello',
+        username: 'joe',
+        raw: 'world',
+        likes: 3);
+    this.arkitController.addUIView(node);
+    this.arkitController.onNodeTap = (nodes) {
+      print('nodes ${nodes.toString()}');
+    };
   }
 
   void _handleAddAnchor(ARKitAnchor anchor) {

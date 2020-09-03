@@ -1,4 +1,5 @@
 import ARKit
+import SwiftUI
 
 extension FlutterArkitView {
     func onAddNode(_ arguments: Dictionary<String, Any>) {
@@ -14,16 +15,62 @@ extension FlutterArkitView {
     }
     
     func onAddUIViewNode(_ arguments: Dictionary<String, Any>) {
+        
 //        let geometryArguments = arguments["geometry"] as? Dictionary<String, Any>
-//        let geometry = createGeometry(geometryArguments, withDevice: sceneView.device)
-//        let node = createNode(geometry, fromDict: arguments, forDevice: sceneView.device)
+        let geometry = SCNPlane(width: 1, height: 1)// createGeometry(geometryArguments, withDevice: sceneView.device)
+        let node = createUINode(geometry, fromDict: arguments, forDevice: sceneView.device)
+        
 //        if let parentNodeName = arguments["parentNodeName"] as? String {
 //            let parentNode = sceneView.scene.rootNode.childNode(withName: parentNodeName, recursively: true)
 //            parentNode?.addChildNode(node)
 //        } else {
 //            sceneView.scene.rootNode.addChildNode(node)
 //        }
+        createViewController(for: node)
+//        let arPostCard = ARPostCardUIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+//        let material = SCNMaterial()
+//        material.diffuse.contents = arPostCard
+        // Set the material to the geometry of the node (plane geometry)
+//        node.geometry?.materials = [material]
+//        sceneView.scene.rootNode.addChildNode(node)
     }
+    
+    func createViewController(for node: SCNNode) {
+        // create a hosting controller with SwiftUI view
+        
+        // Do this on the main thread
+        DispatchQueue.main.async {
+            let arVC = ArPostCardController()
+//            arVC.willMove(toParent: self)
+            // make the hosting VC a child to the main view controller
+//            self.addChild(arVC)
+            
+            // set the pixel size of the Card View
+            arVC.view.frame = CGRect(x: 0, y: 0, width: 1, height: 1)
+            
+            // add the ar card view as a subview to the main view
+//            self.view.addSubview(arVC.view)
+            
+            // render the view on the plane geometry as a material
+
+            // create a new material
+            let material = SCNMaterial()
+            
+            // this allows the card to render transparent parts the right way
+            arVC.view.isOpaque = false
+            
+            // set the diffuse of the material to the view of the Hosting View Controller
+            material.diffuse.contents = arVC.view.layer
+            
+            // Set the material to the geometry of the node (plane geometry)
+            node.geometry?.materials = [material]
+            
+            arVC.view.backgroundColor = UIColor.red
+
+            self.sceneView.scene.rootNode.addChildNode(node)
+        }
+    }
+
     
     func onRemoveNode(_ arguments: Dictionary<String, Any>) {
         guard let nodeName = arguments["nodeName"] as? String else {
