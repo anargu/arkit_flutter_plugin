@@ -7,7 +7,6 @@ import 'package:vector_math/vector_math_64.dart';
 ///  Node that references an external serialized node graph.
 class ARKitReferencePostNode extends ARKitNode {
   ARKitReferencePostNode({
-    @required this.url,
     ARKitPhysicsBody physicsBody,
     ARKitLight light,
     Vector3 position,
@@ -19,7 +18,9 @@ class ARKitReferencePostNode extends ARKitNode {
     @required this.raw,
     @required this.description,
     @required this.username,
-    @required this.likes,
+    @required this.type,
+    this.likes = 0,
+    this.views = 0,
   }) : super(
           physicsBody: physicsBody,
           light: light,
@@ -34,18 +35,20 @@ class ARKitReferencePostNode extends ARKitNode {
   /// URL location of the Node
   /// Defaults to path from Main Bundle
   /// If path from main bundle fails, will search as full file path
-  final String url;
   final String raw;
   final String description;
   final String username;
+  final String type;
   final int likes;
+  final int views;
 
   @override
   Map<String, dynamic> toMap() => <String, dynamic>{
-        'url': url,
         'raw': raw,
         'description': description,
         'username': username,
+        'type': type,
         'likes': likes,
+        'views': views,
       }..addAll(super.toMap());
 }

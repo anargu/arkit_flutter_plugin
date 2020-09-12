@@ -15,9 +15,21 @@ A new flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
+  s.dependency 'PureLayout'
+
   s.platform = :ios, '11.0'
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'VALID_ARCHS[sdk=iphonesimulator*]' => 'x86_64' }
   s.swift_version = '5.0'
+  
+# s.resource_bundles = {
+#   'MyScene' => 'Classes/MyScene.sks',
+#   'DemoScene' => 'Classes/Views/DemoScene.sks'
+# }
+   s.resources = 'Assets/*'
+   s.resource_bundles = {
+     'arkit_plugin' => ['Assets/*']
+   }
+  
 end

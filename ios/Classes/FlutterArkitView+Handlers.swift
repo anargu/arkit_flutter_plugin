@@ -1,6 +1,17 @@
 import ARKit
 import SwiftUI
 
+extension SKScene {
+    static func fromBundle(fileName: String, bundle: Bundle?) -> SKScene? {
+        guard let bundle = bundle else { return nil }
+        guard let path = bundle.path(forResource: fileName, ofType: "sks") else { return nil }
+        if let data = FileManager.default.contents(atPath: path) {
+            return NSKeyedUnarchiver.unarchiveObject(with: data) as? SKScene
+        }
+        return nil
+    }
+}
+
 extension FlutterArkitView {
     func onAddNode(_ arguments: Dictionary<String, Any>) {
         let geometryArguments = arguments["geometry"] as? Dictionary<String, Any>
@@ -16,59 +27,145 @@ extension FlutterArkitView {
     
     func onAddUIViewNode(_ arguments: Dictionary<String, Any>) {
         
-//        let geometryArguments = arguments["geometry"] as? Dictionary<String, Any>
-        let geometry = SCNPlane(width: 1, height: 1)// createGeometry(geometryArguments, withDevice: sceneView.device)
-        let node = createUINode(geometry, fromDict: arguments, forDevice: sceneView.device)
+        let planeNode = SCNPlane(width: 5, height: 5)// createGeometry(geometryArguments, withDevice: sceneView.device)
         
-//        if let parentNodeName = arguments["parentNodeName"] as? String {
-//            let parentNode = sceneView.scene.rootNode.childNode(withName: parentNodeName, recursively: true)
-//            parentNode?.addChildNode(node)
-//        } else {
-//            sceneView.scene.rootNode.addChildNode(node)
-//        }
-        createViewController(for: node)
-//        let arPostCard = ARPostCardUIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-//        let material = SCNMaterial()
-//        material.diffuse.contents = arPostCard
-        // Set the material to the geometry of the node (plane geometry)
-//        node.geometry?.materials = [material]
-//        sceneView.scene.rootNode.addChildNode(node)
+        let node = createUINode(planeNode, fromDict: arguments, forDevice: sceneView.device)
+        
+        createSKCard(for: node, args: arguments)
     }
     
-    func createViewController(for node: SCNNode) {
-        // create a hosting controller with SwiftUI view
+    func createSKCard(for node: SCNNode,  args: Dictionary<String, Any>) {
+        let material = SCNMaterial()
+        material.diffuse.contents = createUI2(args: args)
+        material.isDoubleSided = true
         
-        // Do this on the main thread
-        DispatchQueue.main.async {
-            let arVC = ArPostCardController()
-//            arVC.willMove(toParent: self)
-            // make the hosting VC a child to the main view controller
-//            self.addChild(arVC)
-            
-            // set the pixel size of the Card View
-            arVC.view.frame = CGRect(x: 0, y: 0, width: 1, height: 1)
-            
-            // add the ar card view as a subview to the main view
-//            self.view.addSubview(arVC.view)
-            
-            // render the view on the plane geometry as a material
+        node.geometry?.materials = [material]
+        
+        node.runAction(SCNAction.rotateBy(x: 0, y: .pi*0, z: -.pi, duration: 0.0))
+        
+        self.sceneView.scene.rootNode.addChildNode(node)
+        node.look(at: SCNVector3Zero)
+    }
+    
+    
+    func createUI() -> SKScene {
+        let skScene = SKScene(size: CGSize(width: 512, height: 512))
+        skScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        skScene.backgroundColor = .clear
 
-            // create a new material
-            let material = SCNMaterial()
-            
-            // this allows the card to render transparent parts the right way
-            arVC.view.isOpaque = false
-            
-            // set the diffuse of the material to the view of the Hosting View Controller
-            material.diffuse.contents = arVC.view.layer
-            
-            // Set the material to the geometry of the node (plane geometry)
-            node.geometry?.materials = [material]
-            
-            arVC.view.backgroundColor = UIColor.red
+        let node = SKSpriteNode(color: .purple, size: CGSize(width: skScene.size.width, height: skScene.size.height))
+        node.position = CGPoint(x: 0, y: 0)
+        node.anchorPoint = CGPoint(x: 0.5, y: 0.5)
 
-            self.sceneView.scene.rootNode.addChildNode(node)
+        
+        let podBundle = Bundle(for: FlutterArkitView.self)
+        let url = podBundle.url(forResource: "arkit_plugin", withExtension: "bundle")
+        let bundle = Bundle(url: url!)
+        let textImg = UIImage(named: "post_card_texture_ios", in: bundle, compatibleWith: nil)
+
+        let nodeTexture = SKTexture(image: textImg!)
+        node.texture = nodeTexture
+
+        
+        
+        let labelNode = SKLabelNode(text: "HOLA")
+        labelNode.fontSize = 32.0
+        labelNode.fontColor = .cyan
+//        labelNode.xScale = -1.0
+
+
+        skScene.addChild(node)
+        skScene.addChild(labelNode)
+        
+        return skScene
+    }
+    
+    
+    func createUI2(args: Dictionary<String, Any>) -> SKScene {
+
+        let podBundle = Bundle(for: FlutterArkitView.self)
+        let url = podBundle.url(forResource: "arkit_plugin", withExtension: "bundle")
+        let bundle = Bundle(url: url!)
+        let skScene = SKScene.fromBundle(fileName: "SKPostCard", bundle: bundle)!
+        
+        
+        let textImg = UIImage(named: "post_card_texture_ios", in: bundle, compatibleWith: nil)
+        let nodeTexture = SKTexture(image: textImg!)
+
+        skScene.backgroundColor = .clear
+        let backgroundNode = skScene.childNode(withName: "backgroundNode") as? SKSpriteNode
+        backgroundNode?.texture = nodeTexture
+        
+        // load author
+        let author = args["username"] as? String ?? "No username"
+        let authorLabel = backgroundNode?.childNode(withName: "authorLabel") as? SKLabelNode
+        let mutableAttributedText = authorLabel?.attributedText?.mutableCopy()
+        (mutableAttributedText as? NSMutableAttributedString)?.mutableString.setString(author)
+        authorLabel?.attributedText = mutableAttributedText! as? NSAttributedString
+
+
+        
+        if let postType = args["type"] as? String {
+
+            let imageContent = backgroundNode?.childNode(withName: "postContent")?.childNode(withName: "imageContent") as? SKSpriteNode
+
+            let textContent = backgroundNode?.childNode(withName: "postContent")?.childNode(withName: "textContent") as? SKLabelNode
+            
+            if postType == "TEXT" {
+                imageContent?.isHidden = true
+                textContent?.isHidden = false
+            } else {
+                // IMAGE
+                imageContent?.isHidden = false
+                textContent?.isHidden = true
+            }
+
+            if postType == "TEXT" {
+                // text content
+                
+                let mutableAttributedText = textContent?.attributedText?.mutableCopy()
+                (mutableAttributedText as? NSMutableAttributedString)?.mutableString.setString(args["raw"] as? String ?? "No Content :c")
+                
+                
+                textContent?.preferredMaxLayoutWidth = (backgroundNode?.size.width)! - 50.0
+                textContent?.attributedText = mutableAttributedText! as? NSAttributedString
+
+            } else {
+                UIImage.downloadImage(from: NSURL(string: args["raw"] as! String)! as URL, onNewImage: {
+                    (rawImage) in
+                    let imgTex = SKTexture(image: rawImage!)
+                    imageContent?.texture = imgTex
+                })
+            }
         }
+
+        
+        // load icons
+        let statsGroup = backgroundNode?.childNode(withName: "StatsGroup")
+        
+        let viewIcon = statsGroup?.childNode(withName: "viewIcon") as? SKSpriteNode
+        let viewTexImage = UIImage(named: "eye_1", in: bundle, compatibleWith: nil)
+        let viewTex = SKTexture(image: viewTexImage!)
+        viewIcon?.texture = viewTex
+        
+        let likeIcon = statsGroup?.childNode(withName: "likeIcon") as? SKSpriteNode
+        let likeTexImage = UIImage(named: "heart_1", in: bundle, compatibleWith: nil)
+        let likeTex = SKTexture(image: likeTexImage!)
+        likeIcon?.texture = likeTex
+        
+        // load stats value
+        
+        if let likes = args["likes"] as? Int {
+            let likeLabel = statsGroup?.childNode(withName: "likeLabel") as? SKLabelNode
+            likeLabel?.text = String(format: "%02d", likes)
+        }
+        
+        if let views = args["views"] as? Int {
+            let viewsLabel = statsGroup?.childNode(withName: "viewLabel") as? SKLabelNode
+            viewsLabel?.text = String(format: "%02d", views)
+        }
+        
+        return skScene
     }
 
     

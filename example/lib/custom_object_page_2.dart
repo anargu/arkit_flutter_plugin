@@ -35,39 +35,41 @@ class _CustomObjectPage2State extends State<CustomObjectPage2> {
     this.arkitController = arkitController;
     // this.arkitController.onAddNodeForAnchor = _handleAddAnchor;
     node = ARKitReferencePostNode(
-        url: 'models.scnassets/eevee.dae',
         position: vector.Vector3(0, 0, -2),
         scale: vector.Vector3(0.2, 0.2, 0.2),
         description: 'hello',
         username: 'joe',
-        raw: 'world',
-        likes: 3);
+        raw: 'https://media.giphy.com/media/frNEzcyLLtuOwEtwzo/giphy.gif',
+        type: 'IMAGE',
+        likes: 4,
+        views: 0);
     this.arkitController.addUIView(node);
     this.arkitController.onNodeTap = (nodes) {
       print('nodes ${nodes.toString()}');
     };
   }
 
-  void _handleAddAnchor(ARKitAnchor anchor) {
-    if (!(anchor is ARKitPlaneAnchor)) {
-      return;
-    }
-    _addUiView(arkitController, anchor);
-  }
+  // void _handleAddAnchor(ARKitAnchor anchor) {
+  //   if (!(anchor is ARKitPlaneAnchor)) {
+  //     return;
+  //   }
+  //   _addUiView(arkitController, anchor);
+  // }
 
-  void _addUiView(ARKitController controller, ARKitPlaneAnchor anchor) {
-    anchorId = anchor.identifier;
-    if (node != null) {
-      controller.remove(node.name);
-    }
-    node = ARKitReferencePostNode(
-        url: 'models.scnassets/eevee.dae',
-        position: vector.Vector3(0, 0, 0),
-        scale: vector.Vector3(0.2, 0.2, 0.2),
-        description: 'hello',
-        username: 'joe',
-        raw: 'world',
-        likes: 3);
-    controller.addUIView(node, parentNodeName: anchor.nodeName);
-  }
+  // void _addUiView(ARKitController controller, ARKitPlaneAnchor anchor) {
+  //   anchorId = anchor.identifier;
+  //   if (node != null) {
+  //     controller.remove(node.name);
+  //   }
+  //   node = ARKitReferencePostNode(
+  //       url: 'models.scnassets/eevee.dae',
+  //       position: vector.Vector3(0, 0, 0),
+  //       scale: vector.Vector3(1, 1, 1),
+  //       description: 'hello',
+  //       username: 'joe',
+  //       raw: 'world',
+  //       type: 'TEXT',
+  //       likes: 3);
+  //   controller.addUIView(node, parentNodeName: anchor.nodeName);
+  // }
 }
