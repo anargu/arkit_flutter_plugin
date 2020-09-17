@@ -27,7 +27,7 @@ extension FlutterArkitView {
     
     func onAddUIViewNode(_ arguments: Dictionary<String, Any>) {
         
-        let planeNode = SCNPlane(width: 1, height: 1)// createGeometry(geometryArguments, withDevice: sceneView.device)
+        let planeNode = SCNPlane(width: 0.5, height: 0.5)
         
         let node = createUINode(planeNode, fromDict: arguments, forDevice: sceneView.device)
         
