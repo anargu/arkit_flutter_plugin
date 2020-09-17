@@ -15,6 +15,7 @@ class ARKitReferencePostNode extends ARKitNode {
     String name,
     int renderingOrder,
     bool isHidden,
+    @required this.avatar,
     @required this.raw,
     @required this.description,
     @required this.username,
@@ -38,6 +39,7 @@ class ARKitReferencePostNode extends ARKitNode {
   final String raw;
   final String description;
   final String username;
+  final String avatar;
   final String type;
   final int likes;
   final int views;
@@ -47,6 +49,7 @@ class ARKitReferencePostNode extends ARKitNode {
         'raw': raw,
         'description': description,
         'username': username,
+        'avatar': avatar,
         'type': type,
         'likes': likes,
         'views': views,

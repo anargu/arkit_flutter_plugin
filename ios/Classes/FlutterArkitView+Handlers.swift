@@ -68,6 +68,20 @@ extension FlutterArkitView {
         let mutableAttributedText = authorLabel?.attributedText?.mutableCopy()
         (mutableAttributedText as? NSMutableAttributedString)?.mutableString.setString(author)
         authorLabel?.attributedText = mutableAttributedText! as? NSAttributedString
+        
+        // load author avatar
+        let authorAvatar = backgroundNode?.childNode(withName: "authorAvatarUrl") as? SKShapeNode
+        authorAvatar?.path = UIBezierPath(roundedRect: CGRect(x: -24, y: -24, width: 48, height: 48), cornerRadius: 24).cgPath
+        
+        if let avatarUrl = args["avatar"] as? String {
+            UIImage.downloadImage(from: NSURL(string: avatarUrl)! as URL, onNewImage: {
+                (rawImage) in
+                let imgTex = SKTexture(image: rawImage!)
+                authorAvatar?.fillTexture = imgTex
+            })
+        }
+        
+        
 
 
         
