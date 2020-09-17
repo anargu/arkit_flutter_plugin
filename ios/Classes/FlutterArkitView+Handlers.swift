@@ -27,7 +27,7 @@ extension FlutterArkitView {
     
     func onAddUIViewNode(_ arguments: Dictionary<String, Any>) {
         
-        let planeNode = SCNPlane(width: 5, height: 5)// createGeometry(geometryArguments, withDevice: sceneView.device)
+        let planeNode = SCNPlane(width: 1, height: 1)// createGeometry(geometryArguments, withDevice: sceneView.device)
         
         let node = createUINode(planeNode, fromDict: arguments, forDevice: sceneView.device)
         
@@ -41,45 +41,11 @@ extension FlutterArkitView {
         
         node.geometry?.materials = [material]
         
-        node.runAction(SCNAction.rotateBy(x: 0, y: .pi*0, z: -.pi, duration: 0.0))
+        node.localRotate(by: SCNQuaternion(0, 0, Float.pi, 0))
         
         self.sceneView.scene.rootNode.addChildNode(node)
         node.look(at: SCNVector3Zero)
     }
-    
-    
-    func createUI() -> SKScene {
-        let skScene = SKScene(size: CGSize(width: 512, height: 512))
-        skScene.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-        skScene.backgroundColor = .clear
-
-        let node = SKSpriteNode(color: .purple, size: CGSize(width: skScene.size.width, height: skScene.size.height))
-        node.position = CGPoint(x: 0, y: 0)
-        node.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-
-        
-        let podBundle = Bundle(for: FlutterArkitView.self)
-        let url = podBundle.url(forResource: "arkit_plugin", withExtension: "bundle")
-        let bundle = Bundle(url: url!)
-        let textImg = UIImage(named: "post_card_texture_ios", in: bundle, compatibleWith: nil)
-
-        let nodeTexture = SKTexture(image: textImg!)
-        node.texture = nodeTexture
-
-        
-        
-        let labelNode = SKLabelNode(text: "HOLA")
-        labelNode.fontSize = 32.0
-        labelNode.fontColor = .cyan
-//        labelNode.xScale = -1.0
-
-
-        skScene.addChild(node)
-        skScene.addChild(labelNode)
-        
-        return skScene
-    }
-    
     
     func createUI2(args: Dictionary<String, Any>) -> SKScene {
 
