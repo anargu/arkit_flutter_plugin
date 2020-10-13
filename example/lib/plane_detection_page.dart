@@ -12,6 +12,8 @@ class _PlaneDetectionPageState extends State<PlaneDetectionPage> {
   ARKitController arkitController;
   ARKitPlane plane;
   ARKitNode node;
+  ARKitPlane innerPlane;
+  ARKitReferencePostNode innerNode;
   String anchorId;
 
   @override
@@ -26,7 +28,7 @@ class _PlaneDetectionPageState extends State<PlaneDetectionPage> {
         body: Container(
           child: ARKitSceneView(
             showFeaturePoints: true,
-            planeDetection: ARPlaneDetection.horizontal,
+            planeDetection: ARPlaneDetection.horizontalAndVertical,
             onARKitViewCreated: onARKitViewCreated,
           ),
         ),
@@ -54,10 +56,20 @@ class _PlaneDetectionPageState extends State<PlaneDetectionPage> {
         vector.Vector3(planeAnchor.center.x, 0, planeAnchor.center.z);
     plane.width.value = planeAnchor.extent.x;
     plane.height.value = planeAnchor.extent.z;
+
+    innerNode.position =
+        vector.Vector3(planeAnchor.center.x, -0.1, planeAnchor.center.z);
+    innerPlane.width.value = planeAnchor.extent.x / 2;
+    innerPlane.height.value = planeAnchor.extent.z / 2;
+
+    print(
+        '*** plane extent x, y -> ${planeAnchor.extent.x}, ${planeAnchor.extent.z}');
   }
 
   void _addPlane(ARKitController controller, ARKitPlaneAnchor anchor) {
     anchorId = anchor.identifier;
+    print('*** plane extent x, y -> ${anchor.extent.x}, ${anchor.extent.z}');
+
     plane = ARKitPlane(
       width: anchor.extent.x,
       height: anchor.extent.z,
@@ -74,6 +86,33 @@ class _PlaneDetectionPageState extends State<PlaneDetectionPage> {
       position: vector.Vector3(anchor.center.x, 0, anchor.center.z),
       rotation: vector.Vector4(1, 0, 0, -math.pi / 2),
     );
-    controller.add(node, parentNodeName: anchor.nodeName);
+
+    // ARKitReferencePostNode
+    innerPlane = ARKitPlane(
+      width: anchor.extent.x / 2,
+      height: anchor.extent.z / 2,
+      materials: [
+        ARKitMaterial(
+          transparency: 0.7,
+          diffuse: ARKitMaterialProperty(color: Colors.blue),
+        )
+      ],
+    );
+
+    innerNode = ARKitReferencePostNode(
+      avatar: null,
+      description: null,
+      raw: "TEXT",
+      type: "HOLAAAAAAA",
+      username: "USER 1",
+      likes: 0,
+      views: 1,
+      scale: vector.Vector3(0.5, 0.5, 0.5),
+      position: vector.Vector3(anchor.center.x, 0.01, anchor.center.z),
+      rotation: vector.Vector4(1, 0, 0, -math.pi / 2),
+    );
+
+    // controller.add(node, parentNodeName: anchor.nodeName);
+    controller.addUIView(innerNode, parentNodeName: anchor.nodeName);
   }
 }

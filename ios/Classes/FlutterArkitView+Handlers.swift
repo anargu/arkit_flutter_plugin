@@ -43,8 +43,17 @@ extension FlutterArkitView {
         
         node.localRotate(by: SCNQuaternion(0, 0, Float.pi, 0))
         
-        self.sceneView.scene.rootNode.addChildNode(node)
+        
         node.look(at: SCNVector3Zero)
+        
+        if let parentNodeName = args["parentNodeName"] as? String {
+            let parentNode = sceneView.scene.rootNode.childNode(withName: parentNodeName, recursively: true)
+            parentNode?.addChildNode(node)
+            
+        } else {
+            sceneView.scene.rootNode.addChildNode(node)
+            self.sceneView.scene.rootNode.addChildNode(node)
+        }
     }
     
     func createUI2(args: Dictionary<String, Any>) -> SKScene {
