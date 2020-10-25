@@ -2,6 +2,7 @@ import 'package:arkit_plugin_example/check_support_page.dart';
 import 'package:arkit_plugin_example/custom_animation_page.dart';
 import 'package:arkit_plugin_example/custom_object_page.dart';
 import 'package:arkit_plugin_example/custom_object_page_2.dart';
+import 'package:arkit_plugin_example/custom_object_page_3.dart';
 import 'package:arkit_plugin_example/distance_tracking_page.dart';
 import 'package:arkit_plugin_example/custom_light_page.dart';
 import 'package:arkit_plugin_example/earth_page.dart';
@@ -124,6 +125,13 @@ class MyApp extends StatelessWidget {
         Icons.nature,
         () => Navigator.of(context)
             .push<void>(MaterialPageRoute(builder: (c) => CustomObjectPage())),
+      ),
+      Sample(
+        'Custom Custom Object',
+        '*** Place custom custom object on plane.',
+        Icons.nature,
+        () => Navigator.of(context)
+            .push<void>(MaterialPageRoute(builder: (c) => CustomObjectPage3())),
       ),
       Sample(
         'Occlusion',
