@@ -12,6 +12,8 @@ extension SKScene {
     }
 }
 
+let animationDuration = 2.0
+
 extension FlutterArkitView {
     func onAddNode(_ arguments: Dictionary<String, Any>) {
         let geometryArguments = arguments["geometry"] as? Dictionary<String, Any>
@@ -42,6 +44,14 @@ extension FlutterArkitView {
         node.geometry?.materials = [material]
         
         node.localRotate(by: SCNQuaternion(0, 0, Float.pi, 0))
+        
+        let initialScale = SCNVector3Make(0.01, 0.01, 0.01)
+        node.scale = initialScale
+        DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration) {
+            let changeScale = SCNAction.scale(to: 1.0, duration: animationDuration)
+            node.runAction(changeScale)
+            
+        }
         
         self.sceneView.scene.rootNode.addChildNode(node)
         node.look(at: SCNVector3Zero)

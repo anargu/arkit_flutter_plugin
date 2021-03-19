@@ -42,34 +42,37 @@ class _CustomObjectPage2State extends State<CustomObjectPage2> {
         scale: vector.Vector3(1, 1, 1),
         description: 'hello',
         username: 'joe',
-        avatar: 'https://api.adorable.io/avatars/285/absott@adorable.png',
+        avatar:
+            'https://parallel.sfo2.digitaloceanspaces.com/avatar_0x27eb.png',
         raw: 'https://media.giphy.com/media/frNEzcyLLtuOwEtwzo/giphy.gif',
         type: 'IMAGE',
         likes: 4,
         views: 0);
 
     final node2 = ARKitReferencePostNode(
-        position: vector.Vector3(2, 0, -2),
+        position: vector.Vector3(0.5, 0, -2),
         scale: vector.Vector3(1, 1, 1),
         description: 'hello',
         username: 'joe',
-        avatar: 'https://api.adorable.io/avatars/285/absott@adorable.png',
+        avatar:
+            'https://parallel.sfo2.digitaloceanspaces.com/avatar_0x27eb.png',
         raw: 'Hello',
         type: 'TEXT',
         likes: 4,
         views: 0);
     final node3 = ARKitReferencePostNode(
-        position: vector.Vector3(1, 0, -2),
+        position: vector.Vector3(1, 0, -1),
         scale: vector.Vector3(1, 1, 1),
         description: 'hello',
         username: 'joe',
-        avatar: 'https://api.adorable.io/avatars/285/abott@adorable.png',
+        avatar:
+            'https://parallel.sfo2.digitaloceanspaces.com/avatar_0x27eb.png',
         raw: 'https://media.giphy.com/media/xT5LMJmXRmrn3ft04w/giphy.gif',
         type: 'IMAGE',
         likes: 4,
         views: 0);
     final node4 = ARKitReferencePostNode(
-        position: vector.Vector3(3, 0, -2),
+        position: vector.Vector3(0, 0, -1),
         scale: vector.Vector3(1, 1, 1),
         description: 'hello',
         username: 'joe',

@@ -78,3 +78,9 @@ lcov.info
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 example/.flutter-plugins-dependencies
 example/ios/Flutter/Flutter.podspec
+
+
+
+# fvm config
+.fvm/*
+.fvm
